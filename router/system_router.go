@@ -74,8 +74,9 @@ func InitApiRoute(r *gin.RouterGroup) {
 	ApiRouter := r.Group("api")
 	{
 		ApiRouter.POST("create-api", system.CreateApi)
+		ApiRouter.POST("update-api", system.UpdateApi)
 		ApiRouter.POST("delete-api", system.DeleteApi)
 		ApiRouter.GET("api-list", system.ApiList)
-		ApiRouter.POST("all-api", system.AllApi)
+		ApiRouter.GET("all-api", system.AllApi)
 	}
 }

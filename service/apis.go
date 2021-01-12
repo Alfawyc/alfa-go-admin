@@ -18,6 +18,15 @@ func CreateApi(api model.Api) error {
 	return err
 }
 
+func UpdateApi(api model.Api) error {
+	if !errors.Is(global.Db.Where("path = ? and method = ? and id != ?", api.Path, api.Method, api.ID).First(&model.Api{}).Error, gorm.ErrRecordNotFound) {
+		return errors.New("存在相同路径和请求方式的api")
+	}
+	err := global.Db.Updates(&api).Error
+
+	return err
+}
+
 func DeleteApi(id int64) error {
 	var api model.Api
 	err := global.Db.Where("id = ?", id).Delete(&api).Error

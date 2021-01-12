@@ -23,6 +23,18 @@ func CreateApi(ctx *gin.Context) {
 	response.SuccessWithDetail(api, "添加成功", ctx)
 }
 
+func UpdateApi(ctx *gin.Context) {
+	var api model.Api
+	_ = ctx.ShouldBind(&api)
+	log.Println(api)
+	err := service.UpdateApi(api)
+	if err != nil {
+		response.FailWithMessage("更新api失败 , "+err.Error(), ctx)
+		return
+	}
+	response.SuccessWithMessage("success", ctx)
+}
+
 func DeleteApi(ctx *gin.Context) {
 	var params request.GetById
 	_ = ctx.ShouldBind(&params)
