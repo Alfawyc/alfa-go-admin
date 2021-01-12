@@ -1,0 +1,26 @@
+host: http://127.0.0.1:9191
+info:
+  contact:
+    email: alfa.wang@foxmail.com
+    name: Alfa
+  description: 这里写描述信息
+  title: Go_admin
+  version: "1.0"
+paths:
+  /base/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录
+      produces:
+      - application/json
+      security:
+      - ApiKeyAuth: []
+      summary: 升级版帖子列表接口
+  /user/register:
+    post:
+      description: 用户注册
+      summary: 用户注册
+      tags:
+      - 用户相关接口
+swagger: "2.0"

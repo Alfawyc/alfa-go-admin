@@ -1,0 +1,41 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "这里写描述信息",
+        "title": "Go_admin",
+        "contact": {
+            "name": "Alfa",
+            "email": "alfa.wang@foxmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "http://127.0.0.1:9191",
+    "paths": {
+        "/base/login": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "用户登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "升级版帖子列表接口"
+            }
+        },
+        "/user/register": {
+            "post": {
+                "description": "用户注册",
+                "tags": [
+                    "用户相关接口"
+                ],
+                "summary": "用户注册"
+            }
+        }
+    }
+}
