@@ -68,5 +68,10 @@ func ApiList(ctx *gin.Context) {
 }
 
 func AllApi(ctx *gin.Context) {
-
+	err, apis, group := service.GetAllApi()
+	if err != nil {
+		response.FailWithMessage("获取api失败", ctx)
+		return
+	}
+	response.SuccessWithDetail(gin.H{"list": apis, "group": group}, "success", ctx)
 }

@@ -46,3 +46,12 @@ func GetApiList(pageInfo request.PageInfo) (int64, []model.Api, error) {
 
 	return total, apiList, err
 }
+
+//@description 获取所有api
+func GetAllApi() (error, []model.Api, []string) {
+	var allApi []model.Api
+	err := global.Db.Find(&allApi).Error
+	var group []string
+	global.Db.Model(model.Api{}).Select("group").Group("group").Find(&group)
+	return err, allApi, group
+}
