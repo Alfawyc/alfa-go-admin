@@ -7,11 +7,13 @@ import (
 	_ "go_gin/docs"
 	"go_gin/middleware"
 	"log"
+	"net/http"
 )
 
 func InitRouter() *gin.Engine {
 	//后期修改为自定义中间键
 	r := gin.Default()
+	r.StaticFS("static/upload/", http.Dir("static/upload"))
 	//跨域
 	r.Use(middleware.Cors())
 	log.Println("user middleware cors")

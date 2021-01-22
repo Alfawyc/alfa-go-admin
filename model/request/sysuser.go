@@ -7,6 +7,7 @@ type Register struct {
 	Phone    string `json:"phone" form:"phone"`
 	Email    string `json:"email" form:"email"`
 	Sex      string `json:"sex" form:"sex"`
+	Avatar   string `json:"avatar" form:"avatar"`
 }
 
 type Login struct {

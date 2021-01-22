@@ -18,17 +18,18 @@ func CasbinHandler() gin.HandlerFunc {
 		//类型断言
 		waitUser := claims.(*CustomClaims)
 		//获取请求url
-		obj := ctx.Request.URL.RequestURI() //user go to access resource
+		obj := ctx.Request.URL.Path //user go to access resource
 		//获取请求方法
 		act := ctx.Request.Method //the operation that the user performs on the resource
-		//todo 获取角色
+		//获取角色
 		sub := waitUser.AuthorityId //用户
 		if sub == "" {
 			log.Println("暂时未获取到authorityId")
-			sub = "888"
+			response.FailWithMessage("未获取到用户角色", ctx)
+			return
 		}
 		e := service.Casbin()
-		log.Println(e, sub, obj, act)
+		log.Println(sub, obj, act)
 		ok, _ := e.Enforce(sub, obj, act)
 		if ok {
 			ctx.Next()

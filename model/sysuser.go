@@ -10,7 +10,7 @@ type User struct {
 	BaseModel
 	Username    string `json:"username" form:"username" gorm:"username"`
 	Password    string `json:"password" form:"password"  gorm:"password"`
-	NickName    string `json:"nick_name" form:"nickname" gorm:"nick_name"`
+	NickName    string `json:"nickname" form:"nickname" gorm:"nick_name"`
 	Phone       string `json:"phone" form:"phone" gorm:"phone"`
 	Avatar      string `json:"avatar" form:"avatar" gorm:"avatar"`
 	Sex         string `json:"sex" form:"sex" gorm:"sex"`

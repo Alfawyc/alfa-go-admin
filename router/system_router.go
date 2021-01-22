@@ -22,7 +22,11 @@ func publicRoute(r *gin.RouterGroup) {
 	{
 		base.GET("captcha", system.GenerateCaptcha)
 		base.POST("login", system.Login)
-		base.GET("/ping", system.HelloWord)
+		base.GET("ping", system.HelloWord)
+	}
+	file := r.Group("file")
+	{
+		file.POST("/upload", system.UploadFile)
 	}
 }
 
@@ -44,7 +48,7 @@ func InitUserRouter(r *gin.RouterGroup) {
 		UserRouter.POST("change-password", system.ChangePassword)
 		UserRouter.GET("user-list", system.GetUserList)
 		UserRouter.POST("delete-user", system.DeleteUser)
-		UserRouter.PUT("set-info", system.SetUserInfo)
+		UserRouter.POST("set-info", system.SetUserInfo)
 		UserRouter.POST("user-auth", system.UserAuth)
 	}
 }

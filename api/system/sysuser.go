@@ -12,6 +12,7 @@ import (
 	"go_gin/service"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -49,12 +50,16 @@ func Login(ctx *gin.Context) {
 
 //@desc 登陆后签发jwt
 func tokenNext(ctx *gin.Context, user model.User) {
+	//获取用户authorityId
+	err, userAuth := service.GetUserAuth(int(user.ID))
+	log.Println("用户权限id , ", userAuth.AuthorityId)
 	j := &middleware.JWT{[]byte("alfa")}
 	claims := middleware.CustomClaims{
-		UserId:     int(user.ID),
-		Username:   user.Username,
-		Nickname:   user.NickName,
-		BufferTime: 60 * 60 * 24, //缓冲时间1天  缓冲时间内会刷新token令牌 此时一个用户会存在两个令牌但前端只存一个
+		UserId:      int(user.ID),
+		Username:    user.Username,
+		Nickname:    user.NickName,
+		AuthorityId: strconv.Itoa(userAuth.AuthorityId),
+		BufferTime:  60 * 60 * 24, //缓冲时间1天  缓冲时间内会刷新token令牌 此时一个用户会存在两个令牌但前端只存一个
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix() - 1000,       //签名生效时间
 			ExpiresAt: time.Now().Unix() + 60*60*24*7, //过去时间7天
@@ -78,6 +83,7 @@ func tokenNext(ctx *gin.Context, user model.User) {
 func Register(ctx *gin.Context) {
 	var registerForm request.Register
 	err := ctx.ShouldBind(&registerForm)
+	log.Println(registerForm)
 	if err != nil {
 		response.FailWithMessage("绑定数据失败"+err.Error(), ctx)
 		return
@@ -89,6 +95,7 @@ func Register(ctx *gin.Context) {
 		Phone:    registerForm.Phone,
 		Email:    registerForm.Email,
 		Sex:      registerForm.Sex,
+		Avatar:   registerForm.Avatar,
 	}
 	err, userCreate := service.RegisterUser(*user)
 	if err != nil {
@@ -183,13 +190,13 @@ func SetUserInfo(ctx *gin.Context) {
 	var user model.User
 	_ = ctx.ShouldBind(&user)
 
-	err, reqUser := service.SetUserInfo(user)
+	err, _ := service.SetUserInfo(user)
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"message": "更新失败"})
+		response.FailWithMessage("更新失败", ctx)
 		return
 	}
 
-	ctx.JSON(200, gin.H{"message": "更新成功", "user-info": reqUser})
+	response.SuccessWithMessage("success", ctx)
 }
 
 func InsertSysUser(ctx *gin.Context) {
