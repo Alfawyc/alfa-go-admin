@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go_gin/database"
 	"go_gin/router"
+	"go_gin/service"
 	"log"
 	"net/http"
 	"os"
@@ -29,6 +30,8 @@ func main() {
 		Addr:    ":9191",
 		Handler: r,
 	}
+	//初始化定时任务
+	service.ServiceTask.InitTask()
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen：%s \n", err)

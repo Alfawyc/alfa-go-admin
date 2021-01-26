@@ -38,6 +38,7 @@ func privateRoute(r *gin.RouterGroup) {
 	InitCasbinRouter(privateGroup)
 	InitAuthRouter(privateGroup)
 	InitApiRoute(privateGroup)
+	InitTaskRoute(privateGroup)
 }
 
 func InitUserRouter(r *gin.RouterGroup) {
@@ -82,5 +83,13 @@ func InitApiRoute(r *gin.RouterGroup) {
 		ApiRouter.POST("delete-api", system.DeleteApi)
 		ApiRouter.GET("api-list", system.ApiList)
 		ApiRouter.GET("all-api", system.AllApi)
+	}
+}
+
+func InitTaskRoute(r *gin.RouterGroup) {
+	TaskRoute := r.Group("task")
+	{
+		TaskRoute.POST("add-task", system.AddTask)
+		TaskRoute.GET("task-list", system.GetTask)
 	}
 }

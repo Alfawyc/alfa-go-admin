@@ -117,7 +117,7 @@ func ChangePassword(ctx *gin.Context) {
 	//获取当前登陆用户
 	userId := GetUserId(ctx)
 	if err := ctx.ShouldBind(&user); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"message": "绑定数据失败"})
+		response.FailWithMessage("绑定数据失败", ctx)
 		return
 	}
 	//验证旧密码
@@ -127,10 +127,10 @@ func ChangePassword(ctx *gin.Context) {
 	err, _ := service.ChangePassword(&u, user.NewPassword)
 	if err != nil {
 		log.Println(err.Error())
-		ctx.JSON(http.StatusOK, gin.H{"message": "修改失败"})
+		response.FailWithMessage("修改失败", ctx)
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"message": "修改成功"})
+	response.SuccessWithMessage("success", ctx)
 }
 
 //@desc 获取系统用户列表
