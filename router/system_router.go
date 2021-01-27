@@ -91,5 +91,7 @@ func InitTaskRoute(r *gin.RouterGroup) {
 	{
 		TaskRoute.POST("add-task", system.AddTask)
 		TaskRoute.GET("task-list", system.GetTask)
+		TaskRoute.POST("remove-task", system.StopTask)
+		TaskRoute.POST("recover-task", system.RecoverTask)
 	}
 }

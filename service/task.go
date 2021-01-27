@@ -52,12 +52,19 @@ func (task Task) Add(item model.TaskList) {
 		log.Println("创建job失败,任务id:", item.ID)
 		return
 	}
-	ServiceCron.AddFunc(item.Spec, taskFunc)
+	entryId, _ := ServiceCron.AddFunc(item.Spec, taskFunc)
+	//todo 更新task表 entryId 及状态
+	log.Println("cron entryId: ", entryId)
 }
 
 func (task Task) Remove(id int) {
 	entryId := cron.EntryID(id)
 	ServiceCron.Remove(entryId)
+}
+
+func (task Task) RemoveAndAdd(list model.TaskList) {
+	task.Remove(int(list.ID))
+	task.Add(list)
 }
 
 //jonFunc

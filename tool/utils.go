@@ -25,7 +25,6 @@ type CmdResult struct {
 
 //执行shell 命令
 func ExecShell(ctx context.Context, command string) (string, error) {
-	log.Println("command ,", command)
 	cmd := exec.Command("cmd", "/C", command)
 	var resultChan chan CmdResult = make(chan CmdResult)
 	go func() {

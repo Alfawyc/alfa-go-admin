@@ -46,3 +46,24 @@ func AddTask(ctx *gin.Context) {
 	}
 	response.SuccessWithDetail(gin.H{"task": res}, "success", ctx)
 }
+
+func StopTask(ctx *gin.Context) {
+	var requestParams request.GetById
+	_ = ctx.ShouldBindJSON(&requestParams)
+	//暂停任务
+	service.ServiceTask.Remove(int(requestParams.Id))
+	response.SuccessWithMessage("success", ctx)
+}
+
+//重置运行
+func RecoverTask(ctx *gin.Context) {
+	var requestParams request.GetById
+	_ = ctx.ShouldBindJSON(&requestParams)
+	detail, err := service.TaskDetail(int(requestParams.Id))
+	if err != nil {
+		response.FailWithMessage("获取任务信息失败"+err.Error(), ctx)
+		return
+	}
+	service.ServiceTask.RemoveAndAdd(detail)
+	response.SuccessWithMessage("success", ctx)
+}

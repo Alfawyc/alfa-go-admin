@@ -33,3 +33,11 @@ func GetAllTask() ([]model.TaskList, error) {
 
 	return task, err
 }
+
+//@desc 任务详情
+func TaskDetail(id int) (model.TaskList, error) {
+	var detail model.TaskList
+	err := global.Db.Where("id = ?", id).First(&detail).Error
+
+	return detail, err
+}
