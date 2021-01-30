@@ -10,8 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
-//@description 创建角色
-//@Route /auth/create-auth
+//@Summary 创建角色
+//@Tags Auth
+//@Param data body model.Auth true "角色信息"
+//@Success 200
+//@Router /auth/create-auth [POST]
 func CreateAuth(ctx *gin.Context) {
 	var auth model.Auth
 	err := ctx.ShouldBind(&auth)
@@ -29,8 +32,11 @@ func CreateAuth(ctx *gin.Context) {
 	response.SuccessWithDetail(gin.H{"authority": data}, "添加成功", ctx)
 }
 
-//@description 更新角色
-//@Route /auth/update-auth
+//@Summary 更新角色
+//@Tags Auth
+//@Param data body model.Auth true "角色信息"
+//@Success 200
+//@Router /auth/update-auth [POST]
 func UpdateAuth(ctx *gin.Context) {
 	var auth model.Auth
 	_ = ctx.ShouldBind(&auth)
@@ -49,8 +55,11 @@ func UpdateAuth(ctx *gin.Context) {
 	return
 }
 
-//@description 角色列表
-//@Route /auth/auth-list
+//@Summary 角色列表
+//@Tags Auth
+//@Param data query request.PageInfo false "页码,每页条数"
+//@Success 200
+//@Router /auth/auth-list [GET]
 func AuthList(ctx *gin.Context) {
 	var pageInfo request.PageInfo
 	_ = ctx.ShouldBind(&pageInfo)
@@ -73,8 +82,11 @@ func AuthList(ctx *gin.Context) {
 	}, "获取成功", ctx)
 }
 
-//@description 删除角色
-//@Route /auth/delete-auth
+///@Summary 删除角色
+//@Tags Auth
+//@Param data body model.Auth true "角色信息"
+//@Success 200
+//@Router /auth/delete-auth [POST]
 func DeleteAuth(ctx *gin.Context) {
 	var auth model.Auth
 	_ = ctx.ShouldBind(&auth)
@@ -86,6 +98,11 @@ func DeleteAuth(ctx *gin.Context) {
 	response.SuccessWithMessage("删除成功", ctx)
 }
 
+///@Summary 获取所有角色
+//@Tags Auth
+//@Produce json
+//@Success 200
+//@Router /auth/all-auth [GET]
 func AllAuth(ctx *gin.Context) {
 	var list []model.Auth
 	err, list := service.AllAuthList()

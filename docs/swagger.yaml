@@ -1,26 +1,400 @@
-host: http://127.0.0.1:9191
+definitions:
+  model.Auth:
+    properties:
+      Children:
+        items:
+          $ref: '#/definitions/model.Auth'
+        type: array
+      authority_id:
+        type: integer
+      authority_name:
+        type: string
+      created_by:
+        type: integer
+      createdAt:
+        type: string
+      parent_id:
+        type: integer
+      remark:
+        type: string
+      status:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  model.User:
+    properties:
+      authority_id:
+        type: integer
+      avatar:
+        type: string
+      created_by:
+        type: string
+      createdAt:
+        type: string
+      dept_id:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      nickname:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      remark:
+        type: string
+      sex:
+        type: string
+      status:
+        type: string
+      updated_by:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserAuth:
+    properties:
+      authority_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  request.CasbinInfo:
+    properties:
+      method:
+        type: string
+      path:
+        type: string
+    type: object
+  request.CasbinReceive:
+    properties:
+      authority_id:
+        type: string
+      casbin_infos:
+        items:
+          $ref: '#/definitions/request.CasbinInfo'
+        type: array
+    required:
+    - authority_id
+    - casbin_infos
+    type: object
+  request.ChangePassword:
+    properties:
+      new_password:
+        type: string
+      password:
+        type: string
+    required:
+    - new_password
+    - password
+    type: object
+  request.GetById:
+    properties:
+      id:
+        type: integer
+    type: object
+  request.Login:
+    properties:
+      code:
+        type: string
+      code_id:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - code
+    - code_id
+    - password
+    - username
+    type: object
+  request.Register:
+    properties:
+      avatar:
+        type: string
+      email:
+        type: string
+      nickname:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      sex:
+        type: string
+      username:
+        type: string
+    required:
+    - nickname
+    - password
+    - username
+    type: object
+host: 127.0.0.1:9191
 info:
   contact:
     email: alfa.wang@foxmail.com
     name: Alfa
-  description: 这里写描述信息
+  description: Alfa Gin_admin
   title: Go_admin
   version: "1.0"
 paths:
+  /auth/all-auth:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取所有角色
+      tags:
+      - Auth
+  /auth/auth-list:
+    get:
+      parameters:
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      responses:
+        "200":
+          description: ""
+      summary: 角色列表
+      tags:
+      - Auth
+  /auth/create-auth:
+    post:
+      parameters:
+      - description: 角色信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Auth'
+      responses:
+        "200":
+          description: ""
+      summary: 创建角色
+      tags:
+      - Auth
+  /auth/delete-auth:
+    post:
+      parameters:
+      - description: 角色信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Auth'
+      responses:
+        "200":
+          description: ""
+      summary: 删除角色
+      tags:
+      - Auth
+  /auth/update-auth:
+    post:
+      parameters:
+      - description: 角色信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Auth'
+      responses:
+        "200":
+          description: ""
+      summary: 更新角色
+      tags:
+      - Auth
+  /base/captcha:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200 , "data":"" ,"message":"success" }'
+          schema:
+            type: string
+      summary: 获取验证码
+      tags:
+      - Base
   /base/login:
     post:
       consumes:
       - application/json
-      description: 用户登录
+      parameters:
+      - description: 用户名,密码,验证码,验证码id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Login'
       produces:
       - application/json
-      security:
-      - ApiKeyAuth: []
-      summary: 升级版帖子列表接口
+      responses:
+        "200":
+          description: '{"code":200 , "data":"" ,"message":"success" }'
+          schema:
+            type: string
+      summary: 用户登陆
+      tags:
+      - Base
+  /base/ping:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200 , "data":"{"data":"Go gin"}" ,"message":"success"
+            }'
+          schema:
+            type: string
+      summary: ping
+      tags:
+      - Base
+  /casbin/authority-policy:
+    post:
+      parameters:
+      - description: authorItyId
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CasbinReceive'
+      responses:
+        "200":
+          description: ""
+      summary: 获取权限列表
+      tags:
+      - Casbin
+  /casbin/update-casbin:
+    post:
+      parameters:
+      - description: api权限信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CasbinReceive'
+      responses:
+        "200":
+          description: ""
+      summary: 更新角色api权限
+      tags:
+      - Casbin
+  /use/delete:
+    post:
+      parameters:
+      - description: 用户id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetById'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 删除用户
+      tags:
+      - User
+  /user/change-password:
+    post:
+      parameters:
+      - description: 旧密码,新密码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200, "msg":"success"}'
+          schema:
+            type: string
+      summary: 修改密码
+      tags:
+      - User
   /user/register:
     post:
-      description: 用户注册
+      parameters:
+      - description: 用户信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{code:"200" , "data" :"" , "message":""}'
+          schema:
+            type: string
       summary: 用户注册
       tags:
-      - 用户相关接口
+      - User
+  /user/set-info:
+    post:
+      parameters:
+      - description: 用户信息
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 更新用户信息
+      tags:
+      - User
+  /user/user-auth:
+    post:
+      parameters:
+      - description: 用户角色
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserAuth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 设置用户权限
+      tags:
+      - User
+  /user/user-list:
+    get:
+      parameters:
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":200 ,"data":"" , "msg":"success"}'
+          schema:
+            type: string
+      summary: 用户列表
+      tags:
+      - User
 swagger: "2.0"

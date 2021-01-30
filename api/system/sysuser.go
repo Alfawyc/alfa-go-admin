@@ -17,11 +17,12 @@ import (
 )
 
 // GetPostListHandler2 升级版帖子列表接口
-// @Summary 升级版帖子列表接口
-// @Description 用户登录
+// @Summary 用户登陆
+// @Tags Base
 // @Accept application/json
-// @Produce application/json
-// @Security ApiKeyAuth
+// @Produce json
+// @Param data body request.Login true "用户名,密码,验证码,验证码id"
+// @Success 200 {string} json "{"code":200 , "data":"" ,"message":"success" }"
 // @Router /base/login [POST]
 func Login(ctx *gin.Context) {
 	var err error
@@ -77,8 +78,10 @@ func tokenNext(ctx *gin.Context, user model.User) {
 }
 
 // @Summary 用户注册
-// @Description 用户注册
-// @Tags 用户相关接口
+// @Tags User
+// @Produce json
+// @Param data body request.Register true "用户信息"
+// @Success 200 {string} json "{code:"200" , "data" :"" , "message":""}"
 // @Router /user/register [POST]
 func Register(ctx *gin.Context) {
 	var registerForm request.Register
@@ -109,8 +112,11 @@ func Register(ctx *gin.Context) {
 	response.SuccessWithDetail(gin.H{"message": "注册成功", "user": userCreate}, "success", ctx)
 }
 
-//@description 修改用户密码
-// @Tags 用户相关接口
+// @Summary 修改密码
+// @Tags User
+// @Produce json
+// @Param data body request.ChangePassword true "旧密码,新密码"
+// @Success 200 string json "{"code":200, "msg":"success"}"
 // @Router /user/change-password [POST]
 func ChangePassword(ctx *gin.Context) {
 	var user request.ChangePassword
@@ -133,7 +139,12 @@ func ChangePassword(ctx *gin.Context) {
 	response.SuccessWithMessage("success", ctx)
 }
 
-//@desc 获取系统用户列表
+//@Summary 用户列表
+//@Tags User
+//@Produce json
+//@Param data query request.PageInfo false "页码,每页条数"
+//@Success 200 string json "{"code":200 ,"data":"" , "msg":"success"}"
+//@Router /user/user-list [GET]
 func GetUserList(ctx *gin.Context) {
 	var pageParams request.PageInfo
 	_ = ctx.ShouldBind(&pageParams)
@@ -152,7 +163,12 @@ func GetUserList(ctx *gin.Context) {
 	response.SuccessWithDetail(response.PageResult{list, total, pageParams.Page, pageParams.PageSize}, "success", ctx)
 }
 
-//@desc 删除用户
+//@Summary 删除用户
+//@Tags User
+//@Produce json
+//@Param data body request.GetById true "用户id"
+//@Success 200
+//@Router /use/delete [POST]
 func DeleteUser(ctx *gin.Context) {
 	var params request.GetById
 	_ = ctx.ShouldBind(&params)
@@ -173,7 +189,7 @@ func DeleteUser(ctx *gin.Context) {
 	response.SuccessWithMessage("删除成功", ctx)
 }
 
-//@desc 从gin Context中获取jwt解析用户id
+//从gin Context中获取jwt解析用户id
 func GetUserId(ctx *gin.Context) int {
 	if claims, exists := ctx.Get("claims"); !exists {
 		log.Println("从gin的Context中获取从jwt解析用户id失败，请检查路由是否使用jwt中间件")
@@ -184,7 +200,12 @@ func GetUserId(ctx *gin.Context) int {
 	}
 }
 
-//@desc 设置用户信息
+//@Summary 更新用户信息
+//@Tags User
+//@Produce json
+//@Param data body model.User false "用户信息"
+//@Success 200
+//@Router /user/set-info [POST]
 func SetUserInfo(ctx *gin.Context) {
 	//todo 获取用户再更新,批量跟新数据id必须存在
 	var user model.User
@@ -214,8 +235,12 @@ func InsertSysUser(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"id": id, "message": "添加成功"})
 }
 
-//@description 更新用户角色
-//@Route /user/user-auth
+//@Summary 设置用户权限
+//@Tags User
+//@Produce json
+//@Param data body model.UserAuth true "用户角色"
+//@Success 200
+//@Router /user/user-auth [POST]
 //todo 修改为用户与角色一对多
 func UserAuth(ctx *gin.Context) {
 	var userAuths model.UserAuth

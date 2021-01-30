@@ -50,8 +50,13 @@ func AddTask(ctx *gin.Context) {
 func StopTask(ctx *gin.Context) {
 	var requestParams request.GetById
 	_ = ctx.ShouldBindJSON(&requestParams)
+	detail, err := service.TaskDetail(int(requestParams.Id))
+	if err != nil {
+		response.FailWithMessage("获取任务信息失败"+err.Error(), ctx)
+		return
+	}
 	//暂停任务
-	service.ServiceTask.Remove(int(requestParams.Id))
+	service.ServiceTask.Remove(detail.EntryId)
 	response.SuccessWithMessage("success", ctx)
 }
 

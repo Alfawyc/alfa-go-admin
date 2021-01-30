@@ -14,6 +14,8 @@ type TaskList struct {
 	RetryInterval int    `json:"retry_interval" form:"retry_interval" gorm:"retry_interval"`
 	Remark        string `json:"remark" form:"remark" gorm:"remark"`
 	Status        int8   `json:"status" form:"status" gorm:"status"`
+	RunningState  int8   `json:"running_state" form:"running_state" gorm:"running_state"`
+	EntryId       int    `json:"entry_id" form:"entry_id" gorm:"entry_id"`
 	CreatedBy     int    `json:"created_by" form:"created_by" gorm:"created_by"`
 	BaseModel
 }

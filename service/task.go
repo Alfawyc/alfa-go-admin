@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/robfig/cron/v3"
+	"go_gin/common/global"
 	"go_gin/model"
 	"go_gin/tool"
 	"log"
@@ -36,6 +37,9 @@ func (task Task) InitTask() {
 	}
 	num := 0
 	for _, item := range list {
+		if item.Status != 1 {
+			continue
+		}
 		task.Add(item)
 		num++
 	}
@@ -53,7 +57,11 @@ func (task Task) Add(item model.TaskList) {
 		return
 	}
 	entryId, _ := ServiceCron.AddFunc(item.Spec, taskFunc)
-	//todo 更新task表 entryId 及状态
+	//开始执行更新运行状态,entryId
+	item.RunningState = 1
+	item.EntryId = int(entryId)
+	global.Db.Updates(&item)
+
 	log.Println("cron entryId: ", entryId)
 }
 
@@ -63,7 +71,7 @@ func (task Task) Remove(id int) {
 }
 
 func (task Task) RemoveAndAdd(list model.TaskList) {
-	task.Remove(int(list.ID))
+	task.Remove(list.EntryId)
 	task.Add(list)
 }
 
@@ -71,9 +79,28 @@ func (task Task) RemoveAndAdd(list model.TaskList) {
 func CreateJob(taskModel model.TaskList) cron.FuncJob {
 	//todo 改为grpc方式调用
 	taskFunc := func() {
+		//开始执行任务操作
+		taskModel.RunningState = 1
+		err := global.Db.Updates(&taskModel).Error
+		if err != nil {
+			log.Println("state 1 error", err.Error())
+		} else {
+			log.Println("state 1 success")
+		}
+		log.Println("执行前的操作")
 		//执行任务日志记录
-		result := ExecJob(taskModel)
-		log.Println("执行任务结果 , ", result)
+		_ = ExecJob(taskModel)
+		time.Sleep(time.Second * 5)
+		//执行完成
+		log.Println("执行后的操作")
+		taskModel.RunningState = 2
+		err = global.Db.Updates(&taskModel).Error
+		if err != nil {
+			log.Println(err.Error())
+		} else {
+			log.Println("更新成功")
+		}
+		log.Println("task 执行任务完成 ")
 	}
 
 	return taskFunc
@@ -94,8 +121,16 @@ func ExecJob(taskModel model.TaskList) TaskResult {
 	var i int8 = 0
 	var output string
 	var err error
+	var timeout int
+	//超时时间
+	if taskModel.Timeout == 0 || taskModel.Timeout > 86400 {
+		timeout = 86400
+	} else {
+		timeout = taskModel.Timeout
+	}
+	ctx, _ := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 	for i < execTimes {
-		output, err := tool.ExecShell(context.Background(), taskModel.Command)
+		output, err := tool.ExecShell(ctx, taskModel.Command)
 		if err == nil {
 			return TaskResult{Result: output, Err: err, RetryTimes: i}
 		}

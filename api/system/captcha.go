@@ -9,6 +9,11 @@ import (
 	"net/http"
 )
 
+//@Summary 获取验证码
+//@Tags Base
+//@Produce json
+//@Success 200 {string} json "{"code":200 , "data":"" ,"message":"success" }"
+//@Router /base/captcha [GET]
 func GenerateCaptcha(ctx *gin.Context) {
 	id, bs64, err := captcha.DriverDigitGenerate()
 	if err != nil {

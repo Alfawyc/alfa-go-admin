@@ -8,8 +8,11 @@ import (
 	"log"
 )
 
-//@summary: 更新角色api权限
-//@Route: /update-casbin
+//@Summary 更新角色api权限
+//@Tags Casbin
+//@Param data body request.CasbinReceive true "api权限信息"
+//@Success 200
+//@Router /casbin/update-casbin [POST]
 func UpdateCasbin(ctx *gin.Context) {
 	var params request.CasbinReceive
 	_ = ctx.ShouldBindJSON(&params)
@@ -24,7 +27,11 @@ func UpdateCasbin(ctx *gin.Context) {
 	}
 }
 
-//@Summary: 获取权限列表
+//@Summary 获取权限列表
+//@Tags Casbin
+//@Param data body request.CasbinReceive true "authorItyId"
+//@Success 200
+//@Router /casbin/authority-policy [POST]
 func GetPolicyPathByAuthorityId(ctx *gin.Context) {
 	var casbin request.CasbinReceive
 	err := ctx.ShouldBindJSON(&casbin)

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"go_gin/database"
 	"go_gin/router"
-	"go_gin/service"
 	"log"
 	"net/http"
 	"os"
@@ -15,12 +14,12 @@ import (
 
 // @title Go_admin
 // @version 1.0
-// @description 这里写描述信息
+// @description Alfa Gin_admin
 
 // @contact.name Alfa
 // @contact.email alfa.wang@foxmail.com
 
-// @host http://127.0.0.1:9191
+// @host 127.0.0.1:9191
 func main() {
 	//初始化数据库连接
 	database.SetUp()
@@ -31,7 +30,7 @@ func main() {
 		Handler: r,
 	}
 	//初始化定时任务
-	service.ServiceTask.InitTask()
+	//service.ServiceTask.InitTask()
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen：%s \n", err)
