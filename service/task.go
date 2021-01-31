@@ -121,7 +121,7 @@ func CreateTaskLog(list model.TaskList) int {
 	var taskLog model.TaskLog
 	taskLog.TaskId = int(list.ID)
 	taskLog.StartTime = time.Now()
-	err := global.Db.Create(&taskLog).Error
+	err := global.Db.Select("task_id", "start_time").Create(&taskLog).Error
 	if err != nil {
 		return 0
 	}
