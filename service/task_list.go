@@ -8,6 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
+const TASK_RUNNING = 2
+const TASK_STOP = 1
+
 func GetTaskList(params request.PageInfo) ([]model.TaskList, int64, error) {
 	var total int64
 	var list []model.TaskList

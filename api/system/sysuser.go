@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/mojocn/base64Captcha"
+	"go_gin/common/global"
 	"go_gin/middleware"
 	"go_gin/model"
 	"go_gin/model/request"
@@ -54,7 +55,7 @@ func tokenNext(ctx *gin.Context, user model.User) {
 	//获取用户authorityId
 	err, userAuth := service.GetUserAuth(int(user.ID))
 	log.Println("用户权限id , ", userAuth.AuthorityId)
-	j := &middleware.JWT{[]byte("alfa")}
+	j := &middleware.JWT{[]byte(global.Vp.GetString("jwt.secret"))}
 	claims := middleware.CustomClaims{
 		UserId:      int(user.ID),
 		Username:    user.Username,

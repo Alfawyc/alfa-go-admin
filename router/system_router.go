@@ -11,6 +11,7 @@ func InitSystemRouter(r *gin.Engine) *gin.RouterGroup {
 	g := r.Group("")
 	//public route 基础功能 不做鉴权
 	publicRoute(g)
+	baseJwtRouter(g) //只做jwt 认证
 	//privateRoute
 	privateRoute(g)
 
@@ -23,10 +24,19 @@ func publicRoute(r *gin.RouterGroup) {
 		base.GET("captcha", system.GenerateCaptcha)
 		base.POST("login", system.Login)
 		base.GET("ping", system.HelloWord)
+
 	}
 	file := r.Group("file")
 	{
 		file.POST("/upload", system.UploadFile)
+	}
+}
+
+func baseJwtRouter(r *gin.RouterGroup) {
+	baseJwt := r.Group("base")
+	baseJwt.Use(middleware.JWTAuth())
+	{
+		baseJwt.GET("check", system.Check).Use(middleware.JWTAuth())
 	}
 }
 

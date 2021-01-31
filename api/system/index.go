@@ -3,7 +3,6 @@ package system
 import (
 	"github.com/gin-gonic/gin"
 	"go_gin/model/response"
-	"net/http"
 )
 
 //@Summary ping
@@ -16,5 +15,10 @@ func HelloWord(ctx *gin.Context) {
 }
 
 func Check(ctx *gin.Context) {
-	ctx.Redirect(http.StatusMovedPermanently, "/#home/")
+	userId := GetUserId(ctx)
+	if userId == 0 {
+		response.FailWithMessage("未登陆", ctx)
+		return
+	}
+	response.SuccessWithMessage("已登陆", ctx)
 }

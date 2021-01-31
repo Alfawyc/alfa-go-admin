@@ -80,14 +80,64 @@ func CreateJob(taskModel model.TaskList) cron.FuncJob {
 	//todo 改为grpc方式调用
 	taskFunc := func() {
 		//开始执行任务操作
-		//执行任务日志记录
+		taskLogId := beforeExec(taskModel)
+		if taskLogId == 0 {
+			return
+		}
 		result := ExecJob(taskModel)
-		time.Sleep(time.Second * 5)
+		afterExec(taskModel, result, taskLogId)
 		//执行完成
 		log.Println("task done, result: ", result.Result)
 	}
 
 	return taskFunc
+}
+
+func beforeExec(list model.TaskList) int {
+	logId := CreateTaskLog(list)
+	if logId == 0 {
+		log.Println("写入日志失败")
+		return 0
+	}
+	//更新运行状态
+	list.RunningState = TASK_RUNNING
+	global.Db.Select("running_state").Updates(&list)
+
+	return logId
+}
+
+func afterExec(list model.TaskList, result TaskResult, logId int) {
+	err := UpdateTaskLog(logId, result)
+	if err != nil {
+		log.Println("任务结束,写入日志失败")
+		return
+	}
+	//更新运行状态
+	list.RunningState = TASK_STOP
+	global.Db.Select("running_state").Updates(&list)
+}
+
+func CreateTaskLog(list model.TaskList) int {
+	var taskLog model.TaskLog
+	taskLog.TaskId = int(list.ID)
+	taskLog.StartTime = time.Now()
+	err := global.Db.Create(&taskLog).Error
+	if err != nil {
+		return 0
+	}
+	return taskLog.Id
+}
+
+func UpdateTaskLog(taskLogId int, result TaskResult) error {
+	var taskLogModel model.TaskLog
+	err := global.Db.Where("id = ?", taskLogId).First(&taskLogModel).Error
+	if err != nil {
+		return err
+	}
+	taskLogModel.EndTime = time.Now()
+	taskLogModel.Result = result.Result
+	taskLogModel.RetryTimes = result.RetryTimes
+	return global.Db.Updates(&taskLogModel).Error
 }
 
 //执行具体任务

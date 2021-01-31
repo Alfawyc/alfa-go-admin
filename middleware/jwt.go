@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"go_gin/common/global"
 	"go_gin/model"
 	"go_gin/model/response"
 	"strconv"
@@ -31,7 +32,7 @@ var (
 )
 
 func NewJWT() *JWT {
-	return &JWT{[]byte("alfa")}
+	return &JWT{[]byte(global.Vp.GetString("jwt.secret"))}
 }
 
 func JWTAuth() gin.HandlerFunc {
