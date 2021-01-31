@@ -44,6 +44,7 @@ func AddTask(ctx *gin.Context) {
 		response.FailWithMessage("添加任务失败,"+err.Error(), ctx)
 		return
 	}
+	service.ServiceTask.Add(task)
 	response.SuccessWithDetail(gin.H{"task": res}, "success", ctx)
 }
 
