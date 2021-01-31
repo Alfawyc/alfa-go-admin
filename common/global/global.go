@@ -1,6 +1,9 @@
 package global
 
-import "gorm.io/gorm"
+import (
+	"github.com/spf13/viper"
+	"gorm.io/gorm"
+)
 
 var (
 	Source string
@@ -8,4 +11,7 @@ var (
 	DBName string
 )
 
-var Db *gorm.DB
+var (
+	Db *gorm.DB
+	Vp *viper.Viper
+)

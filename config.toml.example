@@ -1,0 +1,10 @@
+[mysql]
+    host = "127.0.0.1"
+    port = 3307
+    username = "root"
+    password = "root"
+    database = "go_gin"
+
+[serve]
+    addr = ":9191"
+    host = "127.0.0.1"

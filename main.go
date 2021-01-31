@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"go_gin/common/global"
+	"go_gin/core"
 	"go_gin/database"
 	"go_gin/router"
 	"log"
@@ -21,12 +23,14 @@ import (
 
 // @host 127.0.0.1:9191
 func main() {
+	//初始化
+	global.Vp = core.Viper()
 	//初始化数据库连接
 	database.SetUp()
 
 	r := router.InitRouter()
 	srv := &http.Server{
-		Addr:    ":9191",
+		Addr:    global.Vp.GetString("serve.addr"),
 		Handler: r,
 	}
 	//初始化定时任务
@@ -36,7 +40,7 @@ func main() {
 			log.Fatalf("listen：%s \n", err)
 		}
 	}()
-	fmt.Printf("%s Server Run http://127.0.0.1:9191 \r\n", time.Now().Format("2006-01-02 15:04:05"))
+	fmt.Printf("%s Server Run http://127.0.0.1%s \r\n", time.Now().Format("2006-01-02 15:04:05"), global.Vp.GetString("serve.addr"))
 	// 优雅的关闭
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)

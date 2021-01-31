@@ -2,15 +2,18 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/casbin/casbin/v2"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
+	"go_gin/common/global"
 	"go_gin/model"
 	"go_gin/model/request"
 	"log"
 )
 
 func Casbin() *casbin.Enforcer {
-	a, err := gormadapter.NewAdapter("mysql", "root:root@tcp(127.0.0.1:3307)/go_gin", true)
+	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", global.Vp.Get("mysql.username"), global.Vp.Get("mysql.password"), global.Vp.Get("mysql.host"), global.Vp.Get("mysql.port"), global.Vp.Get("mysql.database"))
+	a, err := gormadapter.NewAdapter("mysql", dataSourceName, true)
 	if err != nil {
 		log.Fatalln("gorm NewAdapter error , ", err.Error())
 	}
