@@ -80,27 +80,11 @@ func CreateJob(taskModel model.TaskList) cron.FuncJob {
 	//todo 改为grpc方式调用
 	taskFunc := func() {
 		//开始执行任务操作
-		taskModel.RunningState = 1
-		err := global.Db.Updates(&taskModel).Error
-		if err != nil {
-			log.Println("state 1 error", err.Error())
-		} else {
-			log.Println("state 1 success")
-		}
-		log.Println("执行前的操作")
 		//执行任务日志记录
-		_ = ExecJob(taskModel)
+		result := ExecJob(taskModel)
 		time.Sleep(time.Second * 5)
 		//执行完成
-		log.Println("执行后的操作")
-		taskModel.RunningState = 2
-		err = global.Db.Updates(&taskModel).Error
-		if err != nil {
-			log.Println(err.Error())
-		} else {
-			log.Println("更新成功")
-		}
-		log.Println("task 执行任务完成 ")
+		log.Println("task done, result: ", result.Result)
 	}
 
 	return taskFunc
