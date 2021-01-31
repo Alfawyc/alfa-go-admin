@@ -50,7 +50,7 @@ func CheckAndMkDir(path string) error {
 		return nil
 	}
 	if os.IsNotExist(err) {
-		err = os.Mkdir(path, 0666)
+		err = os.MkdirAll(path, 0666)
 		if err != nil {
 			log.Println("mkdir fail")
 			return errors.New("mkdir fail")
