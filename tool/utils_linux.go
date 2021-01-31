@@ -3,6 +3,8 @@
 package tool
 
 import (
+	"context"
+	"errors"
 	"os/exec"
 	"syscall"
 )
