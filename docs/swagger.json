@@ -243,6 +243,94 @@
                 }
             }
         },
+        "/task/add-task": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "添加任务",
+                "parameters": [
+                    {
+                        "description": "任务信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.TaskList"
+                        }
+                    }
+                ]
+            }
+        },
+        "/task/next-run": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "下次运行时间",
+                "parameters": [
+                    {
+                        "description": "任务id",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.GetById"
+                        }
+                    }
+                ]
+            }
+        },
+        "/task/recover-task": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "重置任务",
+                "parameters": [
+                    {
+                        "description": "任务id",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.GetById"
+                        }
+                    }
+                ]
+            }
+        },
+        "/task/stop-task": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "停止任务",
+                "parameters": [
+                    {
+                        "description": "任务id",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.GetById"
+                        }
+                    }
+                ]
+            }
+        },
         "/use/delete": {
             "post": {
                 "produces": [
@@ -445,6 +533,68 @@
                 },
                 "status": {
                     "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.TaskList": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "integer"
+                },
+                "depend_id": {
+                    "type": "integer"
+                },
+                "depend_status": {
+                    "type": "integer"
+                },
+                "entry_id": {
+                    "type": "integer"
+                },
+                "http_method": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "level": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "protocol": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "retry_interval": {
+                    "type": "integer"
+                },
+                "retry_times": {
+                    "type": "integer"
+                },
+                "running_state": {
+                    "type": "integer"
+                },
+                "spec": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "timeout": {
+                    "type": "integer"
                 },
                 "updatedAt": {
                     "type": "string"

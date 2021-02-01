@@ -9,7 +9,11 @@ import (
 	"log"
 )
 
-//@desc 获取任务列表
+//@Summary 任务列表
+//@Tags Task
+//@Produce json
+//@Param data query request.PageInfo false "页数,每页条数"
+//@Router /task/add-task [POST]
 func GetTask(ctx *gin.Context) {
 	var params request.PageInfo
 	_ = ctx.ShouldBindJSON(&params)
@@ -32,6 +36,11 @@ func GetTask(ctx *gin.Context) {
 	}, "success", ctx)
 }
 
+//@Summary 添加任务
+//@Tags Task
+//@Produce json
+//@Param data body model.TaskList true "任务信息"
+//@Router /task/add-task [POST]
 func AddTask(ctx *gin.Context) {
 	var task model.TaskList
 	_ = ctx.ShouldBindJSON(&task)
@@ -48,6 +57,11 @@ func AddTask(ctx *gin.Context) {
 	response.SuccessWithDetail(gin.H{"task": res}, "success", ctx)
 }
 
+//@Summary 停止任务
+//@Tags Task
+//@Produce json
+//@Param id body request.GetById true "任务id"
+//@Router /task/stop-task [POST]
 func StopTask(ctx *gin.Context) {
 	var requestParams request.GetById
 	_ = ctx.ShouldBindJSON(&requestParams)
@@ -61,7 +75,11 @@ func StopTask(ctx *gin.Context) {
 	response.SuccessWithMessage("success", ctx)
 }
 
-//重置运行
+//@Summary 重置任务
+//@Tags Task
+//@Produce json
+//@Param id body request.GetById true "任务id"
+//@Router /task/recover-task [POST]
 func RecoverTask(ctx *gin.Context) {
 	var requestParams request.GetById
 	_ = ctx.ShouldBindJSON(&requestParams)
@@ -72,4 +90,21 @@ func RecoverTask(ctx *gin.Context) {
 	}
 	service.ServiceTask.RemoveAndAdd(detail)
 	response.SuccessWithMessage("success", ctx)
+}
+
+//@Summary 下次运行时间
+//@Tags Task
+//@Produce json
+//@Param id body request.GetById true "任务id"
+//@Router /task/next-run [GET]
+func NextRun(ctx *gin.Context) {
+	var param request.GetById
+	_ = ctx.ShouldBindJSON(&param)
+	detail, err := service.TaskDetail(int(param.Id))
+	if err != nil {
+		response.FailWithMessage("获取任务信息失败"+err.Error(), ctx)
+		return
+	}
+	nextTime := service.ServiceTask.NextRunTime(detail)
+	response.SuccessWithDetail(gin.H{"next_time": nextTime.Format("2006-01-02 15:04:05")}, "success", ctx)
 }

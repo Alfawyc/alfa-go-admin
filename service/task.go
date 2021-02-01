@@ -75,6 +75,11 @@ func (task Task) RemoveAndAdd(list model.TaskList) {
 	task.Add(list)
 }
 
+func (task Task) NextRunTime(list model.TaskList) time.Time {
+	entry := ServiceCron.Entry(cron.EntryID(list.EntryId))
+	return entry.Next
+}
+
 //jonFunc
 func CreateJob(taskModel model.TaskList) cron.FuncJob {
 	//todo 改为grpc方式调用

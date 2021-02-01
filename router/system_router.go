@@ -8,6 +8,7 @@ import (
 
 func InitSystemRouter(r *gin.Engine) *gin.RouterGroup {
 	//路由组
+	//todo 对请求数据做校验
 	g := r.Group("")
 	//public route 基础功能 不做鉴权
 	publicRoute(g)
@@ -103,5 +104,6 @@ func InitTaskRoute(r *gin.RouterGroup) {
 		TaskRoute.GET("task-list", system.GetTask)
 		TaskRoute.POST("remove-task", system.StopTask)
 		TaskRoute.POST("recover-task", system.RecoverTask)
+		TaskRoute.GET("next-run", system.NextRun)
 	}
 }
