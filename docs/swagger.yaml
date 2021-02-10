@@ -373,6 +373,20 @@ paths:
       summary: 重置任务
       tags:
       - Task
+  /task/stop-running:
+    post:
+      parameters:
+      - description: 任务id
+        in: body
+        name: id
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetById'
+      produces:
+      - application/json
+      summary: 终止运行中的任务
+      tags:
+      - Task
   /task/stop-task:
     post:
       parameters:

@@ -2,6 +2,7 @@ package model
 
 type TaskList struct {
 	Name          string `json:"name" form:"name" gorm:"name"`
+	Uuid          string `json:"uuid" form:"uuid" gorm:"uuid"`
 	Level         int8   `json:"level" form:"level" gorm:"level"`
 	DependId      int    `json:"depend_id" form:"depend_id" gorm:"depend_id"`
 	DependStatus  int8   `json:"depend_status" form:"depend_status" gorm:"depend_status"`

@@ -309,6 +309,28 @@
                 ]
             }
         },
+        "/task/stop-running": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "终止运行中的任务",
+                "parameters": [
+                    {
+                        "description": "任务id",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.GetById"
+                        }
+                    }
+                ]
+            }
+        },
         "/task/stop-task": {
             "post": {
                 "produces": [

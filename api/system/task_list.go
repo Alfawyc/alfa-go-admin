@@ -1,12 +1,15 @@
 package system
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"go_gin/model"
 	"go_gin/model/request"
 	"go_gin/model/response"
 	"go_gin/service"
 	"log"
+	"sync"
 )
 
 //@Summary 任务列表
@@ -48,6 +51,9 @@ func AddTask(ctx *gin.Context) {
 	//获取用户
 	userId := GetUserId(ctx)
 	task.CreatedBy = userId
+	//定时任务唯一id
+	uuidString := uuid.New().String()
+	task.Uuid = uuidString
 	res, err := service.AddTaskList(task)
 	if err != nil {
 		response.FailWithMessage("添加任务失败,"+err.Error(), ctx)
@@ -107,4 +113,29 @@ func NextRun(ctx *gin.Context) {
 	}
 	nextTime := service.ServiceTask.NextRunTime(detail)
 	response.SuccessWithDetail(gin.H{"next_time": nextTime.Format("2006-01-02 15:04:05")}, "success", ctx)
+}
+
+var taskMap sync.Map
+
+//@Summary 终止运行中的任务
+//@Tags Task
+//@Produce json
+//@Param id body request.GetById true "任务id"
+//@Router /task/stop-running [POST]
+func StopRunning(ctx *gin.Context) {
+	var param request.GetById
+	_ = ctx.ShouldBindJSON(&param)
+	detail, err := service.TaskDetail(int(param.Id))
+	if err != nil {
+		response.FailWithMessage("获取任务信息失败"+err.Error(), ctx)
+		return
+	}
+	value, ok := taskMap.Load(detail.ID)
+	if !ok {
+		response.FailWithMessage("任务已执行结束", ctx)
+		return
+	}
+	value.(context.CancelFunc)()
+	response.SuccessWithMessage("success", ctx)
+	return
 }

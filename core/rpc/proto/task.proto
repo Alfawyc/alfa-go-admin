@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package proto;
+
+//定义服务
+service Task {
+    rpc Run(TaskRequest) returns (TaskResponse){}
+}
+
+message TaskRequest {
+    string command = 1; //命令
+    int32 timeout = 3; //超时时间
+    int64 id = 4; //执行任务id
+}
+
+message TaskResponse {
+    string output = 1; //执行结果标准输出
+    string err = 2; //命令错误
+}

@@ -1,18 +1,20 @@
 package service
 
 import (
-	"context"
 	"github.com/robfig/cron/v3"
 	"go_gin/common/global"
+	"go_gin/core/rpc"
+	"go_gin/core/rpc/proto"
 	"go_gin/model"
-	"go_gin/tool"
 	"log"
+	"sync"
 	"time"
 )
 
 var (
 	ServiceCron *cron.Cron
 	ServiceTask Task
+	TaskMap     sync.Map
 )
 
 type Task struct {
@@ -106,7 +108,7 @@ func beforeExec(list model.TaskList) int {
 	}
 	//更新运行状态
 	list.RunningState = TASK_RUNNING
-	global.Db.Select("running_state").Updates(&list)
+	global.Db.Select("running_state").Where("id = ?", list.ID).Updates(&list)
 
 	return logId
 }
@@ -119,7 +121,7 @@ func afterExec(list model.TaskList, result TaskResult, logId int) {
 	}
 	//更新运行状态
 	list.RunningState = TASK_STOP
-	global.Db.Select("running_state").Updates(&list)
+	global.Db.Select("running_state").Where("id = ? ", list.ID).Updates(&list)
 }
 
 func CreateTaskLog(list model.TaskList) int {
@@ -160,16 +162,9 @@ func ExecJob(taskModel model.TaskList) TaskResult {
 	var i int8 = 0
 	var output string
 	var err error
-	var timeout int
-	//超时时间
-	if taskModel.Timeout == 0 || taskModel.Timeout > 86400 {
-		timeout = 86400
-	} else {
-		timeout = taskModel.Timeout
-	}
-	ctx, _ := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
+
 	for i < execTimes {
-		output, err := tool.ExecShell(ctx, taskModel.Command)
+		output, err := RpcRun(taskModel)
 		if err == nil {
 			return TaskResult{Result: output, Err: err, RetryTimes: i}
 		}
@@ -187,4 +182,14 @@ func ExecJob(taskModel model.TaskList) TaskResult {
 	}
 
 	return TaskResult{output, err, taskModel.RetryTimes}
+}
+
+func RpcRun(taskModel model.TaskList) (string, error) {
+	taskRequest := new(proto.TaskRequest)
+	taskRequest.Id = int64(taskModel.ID)
+	taskRequest.Command = taskModel.Command
+	taskRequest.Timeout = int32(taskModel.Timeout)
+	output, err := rpc.Exec(taskRequest)
+
+	return output, err
 }
