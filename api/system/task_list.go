@@ -19,7 +19,7 @@ import (
 //@Router /task/add-task [POST]
 func GetTask(ctx *gin.Context) {
 	var params request.PageInfo
-	_ = ctx.ShouldBindJSON(&params)
+	_ = ctx.ShouldBind(&params)
 	if params.Page == 0 {
 		params.Page = 1
 	}
@@ -138,4 +138,22 @@ func StopRunning(ctx *gin.Context) {
 	value.(context.CancelFunc)()
 	response.SuccessWithMessage("success", ctx)
 	return
+}
+
+func TaskLogList(ctx *gin.Context) {
+	var params request.PageInfo
+	_ = ctx.ShouldBind(&params)
+	if params.Page == 0 {
+		params.Page = 1
+	}
+	if params.PageSize == 0 {
+		params.PageSize = 10
+	}
+	total, list, err := service.TaskLogList(params)
+	if err != nil {
+		response.FailWithMessage("获取任务日志失败", ctx)
+		return
+	}
+	response.SuccessWithDetail(response.PageResult{List: list, Total: total, PageSize: params.PageSize, Page: params.Page}, "success", ctx)
+
 }

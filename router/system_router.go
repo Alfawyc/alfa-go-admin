@@ -106,5 +106,6 @@ func InitTaskRoute(r *gin.RouterGroup) {
 		TaskRoute.POST("recover-task", system.RecoverTask)
 		TaskRoute.GET("next-run", system.NextRun)
 		TaskRoute.POST("stop-running", system.StopRunning)
+		TaskRoute.GET("log-list", system.TaskLogList)
 	}
 }

@@ -3,13 +3,18 @@
 前端项目地址 `https://github.com/Alfawyc/vue-cli-admin.git`
 
 执行 `cp config.toml.example config.toml` 复制配置文件,修改为对应的配置
+
+运行项目前先切换到node目录下，启动rpc服务节点
+
 ## TODO LIST
 - [x] 用户管理，角色管理
 - [x] 权限管理（基于Casbin）
 - [x] 任务添加，暂停，重置
-- [ ] 任务调度修改为rpc方式调用
+- [ ] 任务管理添加节点选择
+- [x] 任务调度修改为rpc方式调用
 - [ ] jwt 修改为密钥和公钥进行加解密
 - [ ] 增加前端页面角色菜单
+- [ ] 增加任务节点管理
 
 ## 程序使用的组件
 + Web框架 [GIN](https://github.com/gin-gonic/gin)
