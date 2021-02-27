@@ -20,7 +20,7 @@ func InitRouter() *gin.Engine {
 	}) //检查登陆
 	r.StaticFS("static/upload/", http.Dir("static/upload"))
 	r.StaticFS("alfa-js/", http.Dir("dist/alfa-js")) //前端项目js文件目录
-	r.StaticFile("/favicon.ico", "dist/alfa-js/favicon.ico")
+	r.StaticFile("/favicon.ico", "./dist/alfa-js/favicon.ico")
 	//跨域
 	r.Use(middleware.Cors())
 	log.Println("user middleware cors")

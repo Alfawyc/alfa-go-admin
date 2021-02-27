@@ -22,3 +22,8 @@
 + 任务调度[robfig/cron](https://github.com/robfig/cron)
 + 配置文件管理[Viper](https://github.com/spf13/viper)
 + 前端页面 vue-cli
+
+## 特别感谢
+- [wdlhao/vue2-element-touzi-admin](https://github.com/wdlhao/vue2-element-touzi-admin)
+- [gin-vue-admin](https://github.com/flipped-aurora/gin-vue-admin)
+- [gocron-定时任务管理系统](https://github.com/ouqiang/gocron)
